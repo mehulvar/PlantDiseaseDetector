@@ -231,3 +231,24 @@ def test_rate_limit_uses_platform_client_ip(monkeypatch):
 
 def post_with_headers(test_client: TestClient, headers: dict):
     return test_client.post("/api/assess", data={"soil": json.dumps(HEALTHY_SOIL)}, headers=headers)
+
+
+def test_multiple_bad_readings_are_all_explained(client):
+    body = post(client, soil={"soil_moisture": 14, "nitrogen": 15}).json()
+    assert body["assessment"]["status"] == "unhealthy"
+    drivers = {d["feature"] for d in body["soil"]["drivers"]}
+    assert drivers == {"soil_moisture", "nitrogen"}
+    assert not any("No action needed" in r for r in body["recommendations"])
+
+
+def test_driver_messages_use_rounded_ranges(client):
+    body = post(client, soil={"soil_moisture": 14, "nitrogen": 15}).json()
+    message = next(d["message"] for d in body["soil"]["drivers"] if d["feature"] == "soil_moisture")
+    assert "30.92-39.26" in message
+
+
+def test_unhealthy_result_never_says_no_action_needed(client):
+    for soil in ({"soil_moisture": 12}, {"nitrogen": 12}, STRESSED_SOIL):
+        body = post(client, soil=soil).json()
+        if body["assessment"]["status"] != "healthy":
+            assert not any("No action needed" in r for r in body["recommendations"])

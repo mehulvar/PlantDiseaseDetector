@@ -72,15 +72,20 @@ class SoilClassifier:
         impacts = self._p_healthy(self._matrix(rows)) - base_p
         drivers = []
         for key, impact in sorted(zip(keys, impacts), key=lambda kv: -kv[1]):
-            if impact < DRIVER_MIN_IMPACT or len(drivers) == MAX_DRIVERS:
-                continue
-            drivers.append(self._describe_driver(key, readings[key], float(impact)))
-        return tuple(drivers)
+            # Several bad readings can mask each other in one-at-a-time counterfactuals,
+            # so readings outside the healthy band count whenever fixing them helps at all.
+            if impact >= DRIVER_MIN_IMPACT or (self._outside_healthy_band(key, readings[key]) and impact > 0):
+                drivers.append(self._describe_driver(key, readings[key], float(impact)))
+        return tuple(drivers[:MAX_DRIVERS])
+
+    def _outside_healthy_band(self, key: str, value: float) -> bool:
+        return not self.profile[key]["healthy_p10"] <= value <= self.profile[key]["healthy_p90"]
 
     def _describe_driver(self, key: str, value: float, impact: float) -> SoilDriver:
         feature = FEATURES_BY_KEY[key]
-        low, high = self.profile[key]["healthy_p10"], self.profile[key]["healthy_p90"]
-        healthy_range = f"{low:g}-{high:g} {feature.unit}"
+        low = round(self.profile[key]["healthy_p10"], 2)
+        high = round(self.profile[key]["healthy_p90"], 2)
+        healthy_range = f"{low:.4g}-{high:.4g} {feature.unit}"
         reading = f"{feature.label} of {value:g} {feature.unit}"
         if value < low:
             message = f"{reading} is below the range seen in healthy plants ({healthy_range})."

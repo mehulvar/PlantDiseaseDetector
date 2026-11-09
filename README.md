@@ -69,7 +69,7 @@ state matches the leaf's with probability ρ. Balanced accuracy for healthy-vs-u
 | Image only | 65.3% | 65.3% | 65.3% |
 | + soil-test kit | **80.6%** | **73.4%** | **67.0%** |
 | + all sensors | 79.5% | 72.3% | 66.2% |
-| + soil moisture only | 70.4% | 67.6% | 65.3% |
+| + soil moisture only | 70.4% | 67.5% | 65.3% |
 | + air/humidity/light only | 65.3% | 65.3% | 65.3% (ignored: no moisture/N) |
 
 With clean lab photos the image model is already ~100% and fusion keeps it there. Full results, including

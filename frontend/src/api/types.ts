@@ -30,6 +30,7 @@ export interface ImageResult {
   predicted_crop: string;
   crop_hint: Crop | null;
   low_confidence: boolean;
+  crop_mismatch: boolean;
   disease: DiseaseInfo;
 }
 

@@ -181,7 +181,8 @@ def ph_recommendation(crop: str | None, readings: dict[str, float]) -> list[str]
 
 
 def recommendations_for(
-    image: ImagePrediction | None, soil: SoilPrediction | None, readings: dict[str, float]
+    image: ImagePrediction | None, soil: SoilPrediction | None, readings: dict[str, float],
+    status: str,
 ) -> list[str]:
     items: list[str] = []
     if image is not None and not CLASS_INFO[image.best.class_id].healthy:
@@ -191,8 +192,13 @@ def recommendations_for(
         items.extend(soil_recommendations(soil))
     crop = (image.crop_hint or image.predicted_crop) if image is not None else None
     items.extend(ph_recommendation(crop, readings))
-    if not items:
+    if not items and status == "healthy":
         items.append("No action needed right now - keep monitoring leaves and soil regularly.")
+    elif not items:
+        items.append(
+            "Growing conditions look stressed but no single reading explains it: re-test the soil, "
+            "check irrigation and fertility, and photograph a leaf for a more specific diagnosis."
+        )
     return list(dict.fromkeys(items))
 
 
@@ -242,7 +248,7 @@ def assess(
         ),
         image=image_result_out(image) if image is not None else None,
         soil=soil_result_out(soil) if soil is not None else None,
-        recommendations=recommendations_for(image, soil, readings),
+        recommendations=recommendations_for(image, soil, readings, fusion.status),
         warnings=warnings_for(image, soil),
         disclaimer=DISCLAIMER,
     )
