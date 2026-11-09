@@ -1,0 +1,529 @@
+{
+  "method": "Simulated pairing of held-out leaf images with out-of-fold soil readings; rho = probability that the soil health state matches the leaf's.",
+  "test_leaves": 2064,
+  "healthy_share": 0.156,
+  "weights": {
+    "image": 1.0,
+    "soil": 0.5
+  },
+  "conditions": {
+    "clean_photos": [
+      {
+        "soil_inputs": "all_features",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.9988,
+          "balanced_accuracy": 0.9993,
+          "diseased_recall": 0.9986
+        },
+        "fused": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "all_features",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.7929,
+          "balanced_accuracy": 0.7966,
+          "diseased_recall": 0.7913
+        },
+        "fused": {
+          "accuracy": 0.9625,
+          "balanced_accuracy": 0.9778,
+          "diseased_recall": 0.9556
+        }
+      },
+      {
+        "soil_inputs": "all_features",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.5958,
+          "balanced_accuracy": 0.6018,
+          "diseased_recall": 0.5931
+        },
+        "fused": {
+          "accuracy": 0.9283,
+          "balanced_accuracy": 0.9575,
+          "diseased_recall": 0.915
+        }
+      },
+      {
+        "soil_inputs": "soil_test_kit",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.9978,
+          "balanced_accuracy": 0.9987,
+          "diseased_recall": 0.9974
+        },
+        "fused": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "soil_test_kit",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.7922,
+          "balanced_accuracy": 0.7966,
+          "diseased_recall": 0.7901
+        },
+        "fused": {
+          "accuracy": 0.9657,
+          "balanced_accuracy": 0.9797,
+          "diseased_recall": 0.9594
+        }
+      },
+      {
+        "soil_inputs": "soil_test_kit",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.5953,
+          "balanced_accuracy": 0.602,
+          "diseased_recall": 0.5922
+        },
+        "fused": {
+          "accuracy": 0.9312,
+          "balanced_accuracy": 0.9592,
+          "diseased_recall": 0.9185
+        }
+      },
+      {
+        "soil_inputs": "moisture_only",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.9007,
+          "balanced_accuracy": 0.9356,
+          "diseased_recall": 0.8848
+        },
+        "fused": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "moisture_only",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.721,
+          "balanced_accuracy": 0.759,
+          "diseased_recall": 0.7038
+        },
+        "fused": {
+          "accuracy": 0.9999,
+          "balanced_accuracy": 0.9999,
+          "diseased_recall": 0.9999
+        }
+      },
+      {
+        "soil_inputs": "moisture_only",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.5488,
+          "balanced_accuracy": 0.592,
+          "diseased_recall": 0.5293
+        },
+        "fused": {
+          "accuracy": 0.9998,
+          "balanced_accuracy": 0.9999,
+          "diseased_recall": 0.9998
+        }
+      },
+      {
+        "soil_inputs": "environment_only",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.5717,
+          "balanced_accuracy": 0.4979,
+          "diseased_recall": 0.6052
+        },
+        "fused": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "environment_only",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.5741,
+          "balanced_accuracy": 0.5011,
+          "diseased_recall": 0.6072
+        },
+        "fused": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "environment_only",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        },
+        "soil_only": {
+          "accuracy": 0.5719,
+          "balanced_accuracy": 0.5008,
+          "diseased_recall": 0.6041
+        },
+        "fused": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "diseased_recall": 1.0
+        }
+      }
+    ],
+    "field_quality_photos": [
+      {
+        "soil_inputs": "all_features",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.9988,
+          "balanced_accuracy": 0.9993,
+          "diseased_recall": 0.9986
+        },
+        "fused": {
+          "accuracy": 0.9359,
+          "balanced_accuracy": 0.7944,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "all_features",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.7929,
+          "balanced_accuracy": 0.7966,
+          "diseased_recall": 0.7913
+        },
+        "fused": {
+          "accuracy": 0.8822,
+          "balanced_accuracy": 0.7231,
+          "diseased_recall": 0.9543
+        }
+      },
+      {
+        "soil_inputs": "all_features",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.5958,
+          "balanced_accuracy": 0.6018,
+          "diseased_recall": 0.5931
+        },
+        "fused": {
+          "accuracy": 0.8344,
+          "balanced_accuracy": 0.6622,
+          "diseased_recall": 0.9125
+        }
+      },
+      {
+        "soil_inputs": "soil_test_kit",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.9978,
+          "balanced_accuracy": 0.9987,
+          "diseased_recall": 0.9974
+        },
+        "fused": {
+          "accuracy": 0.9392,
+          "balanced_accuracy": 0.8053,
+          "diseased_recall": 1.0
+        }
+      },
+      {
+        "soil_inputs": "soil_test_kit",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.7922,
+          "balanced_accuracy": 0.7966,
+          "diseased_recall": 0.7901
+        },
+        "fused": {
+          "accuracy": 0.888,
+          "balanced_accuracy": 0.7339,
+          "diseased_recall": 0.9579
+        }
+      },
+      {
+        "soil_inputs": "soil_test_kit",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.5953,
+          "balanced_accuracy": 0.602,
+          "diseased_recall": 0.5922
+        },
+        "fused": {
+          "accuracy": 0.8388,
+          "balanced_accuracy": 0.6701,
+          "diseased_recall": 0.9153
+        }
+      },
+      {
+        "soil_inputs": "moisture_only",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.9007,
+          "balanced_accuracy": 0.9356,
+          "diseased_recall": 0.8848
+        },
+        "fused": {
+          "accuracy": 0.9076,
+          "balanced_accuracy": 0.704,
+          "diseased_recall": 0.9999
+        }
+      },
+      {
+        "soil_inputs": "moisture_only",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.721,
+          "balanced_accuracy": 0.759,
+          "diseased_recall": 0.7038
+        },
+        "fused": {
+          "accuracy": 0.8984,
+          "balanced_accuracy": 0.6755,
+          "diseased_recall": 0.9995
+        }
+      },
+      {
+        "soil_inputs": "moisture_only",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.5488,
+          "balanced_accuracy": 0.592,
+          "diseased_recall": 0.5293
+        },
+        "fused": {
+          "accuracy": 0.891,
+          "balanced_accuracy": 0.6532,
+          "diseased_recall": 0.9989
+        }
+      },
+      {
+        "soil_inputs": "environment_only",
+        "rho": 1.0,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.5717,
+          "balanced_accuracy": 0.4979,
+          "diseased_recall": 0.6052
+        },
+        "fused": {
+          "accuracy": 0.8893,
+          "balanced_accuracy": 0.6476,
+          "diseased_recall": 0.999
+        }
+      },
+      {
+        "soil_inputs": "environment_only",
+        "rho": 0.8,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.5741,
+          "balanced_accuracy": 0.5011,
+          "diseased_recall": 0.6072
+        },
+        "fused": {
+          "accuracy": 0.89,
+          "balanced_accuracy": 0.6498,
+          "diseased_recall": 0.999
+        }
+      },
+      {
+        "soil_inputs": "environment_only",
+        "rho": 0.6,
+        "image_only": {
+          "accuracy": 0.8915,
+          "balanced_accuracy": 0.6534,
+          "diseased_recall": 0.9994
+        },
+        "soil_only": {
+          "accuracy": 0.5719,
+          "balanced_accuracy": 0.5008,
+          "diseased_recall": 0.6041
+        },
+        "fused": {
+          "accuracy": 0.8903,
+          "balanced_accuracy": 0.6507,
+          "diseased_recall": 0.999
+        }
+      }
+    ]
+  },
+  "soil_weight_sensitivity_field_photos": {
+    "0.25": {
+      "all_features@rho=1.0": 0.7124,
+      "all_features@rho=0.8": 0.6861,
+      "all_features@rho=0.6": 0.6656,
+      "soil_test_kit@rho=1.0": 0.7137,
+      "soil_test_kit@rho=0.8": 0.6874,
+      "soil_test_kit@rho=0.6": 0.6666,
+      "moisture_only@rho=1.0": 0.6798,
+      "moisture_only@rho=0.8": 0.6626,
+      "moisture_only@rho=0.6": 0.649,
+      "environment_only@rho=1.0": 0.6508,
+      "environment_only@rho=0.8": 0.6518,
+      "environment_only@rho=0.6": 0.6518
+    },
+    "0.5": {
+      "all_features@rho=1.0": 0.7944,
+      "all_features@rho=0.8": 0.7231,
+      "all_features@rho=0.6": 0.6622,
+      "soil_test_kit@rho=1.0": 0.8053,
+      "soil_test_kit@rho=0.8": 0.7339,
+      "soil_test_kit@rho=0.6": 0.6701,
+      "moisture_only@rho=1.0": 0.704,
+      "moisture_only@rho=0.8": 0.6755,
+      "moisture_only@rho=0.6": 0.6532,
+      "environment_only@rho=1.0": 0.6476,
+      "environment_only@rho=0.8": 0.6498,
+      "environment_only@rho=0.6": 0.6507
+    },
+    "0.75": {
+      "all_features@rho=1.0": 0.9554,
+      "all_features@rho=0.8": 0.7798,
+      "all_features@rho=0.6": 0.611,
+      "soil_test_kit@rho=1.0": 0.9762,
+      "soil_test_kit@rho=0.8": 0.7913,
+      "soil_test_kit@rho=0.6": 0.6127,
+      "moisture_only@rho=1.0": 0.7232,
+      "moisture_only@rho=0.8": 0.6826,
+      "moisture_only@rho=0.6": 0.6439,
+      "environment_only@rho=1.0": 0.6439,
+      "environment_only@rho=0.8": 0.6476,
+      "environment_only@rho=0.6": 0.6486
+    },
+    "1.0": {
+      "all_features@rho=1.0": 0.9804,
+      "all_features@rho=0.8": 0.7886,
+      "all_features@rho=0.6": 0.6031,
+      "soil_test_kit@rho=1.0": 0.9878,
+      "soil_test_kit@rho=0.8": 0.792,
+      "soil_test_kit@rho=0.6": 0.6029,
+      "moisture_only@rho=1.0": 0.7772,
+      "moisture_only@rho=0.8": 0.7103,
+      "moisture_only@rho=0.6": 0.6464,
+      "environment_only@rho=1.0": 0.6427,
+      "environment_only@rho=0.8": 0.6458,
+      "environment_only@rho=0.6": 0.6461
+    }
+  }
+}

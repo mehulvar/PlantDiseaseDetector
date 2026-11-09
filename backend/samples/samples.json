@@ -1,0 +1,185 @@
+[
+  {
+    "id": "healthy-tomato",
+    "title": "Healthy tomato",
+    "description": "A clean tomato leaf and a balanced soil test.",
+    "crop": "tomato",
+    "image": "healthy-tomato.jpg",
+    "expected_label": "tomato_healthy",
+    "soil": {
+      "soil_moisture": 31.26,
+      "soil_ph": 6.38,
+      "nitrogen": 39.01,
+      "phosphorus": 33.6,
+      "potassium": 15.79,
+      "soil_temperature": 17.54,
+      "ambient_temperature": 19.23,
+      "humidity": 50.84,
+      "light_intensity": 272.11,
+      "chlorophyll_content": 41.21,
+      "electrochemical_signal": 1.154
+    }
+  },
+  {
+    "id": "tomato-late-blight",
+    "title": "Tomato late blight",
+    "description": "Blighted leaf from a field under high stress.",
+    "crop": "tomato",
+    "image": "tomato-late-blight.jpg",
+    "expected_label": "tomato_late_blight",
+    "soil": {
+      "soil_moisture": 10.32,
+      "soil_ph": 7.25,
+      "nitrogen": 34.83,
+      "phosphorus": 34.71,
+      "potassium": 16.5,
+      "soil_temperature": 17.11,
+      "ambient_temperature": 25.5,
+      "humidity": 45.55,
+      "light_intensity": 401.79,
+      "chlorophyll_content": 35.81,
+      "electrochemical_signal": 1.947
+    }
+  },
+  {
+    "id": "potato-early-blight",
+    "title": "Potato early blight",
+    "description": "Early blight lesions; the soil test shows low nitrogen.",
+    "crop": "potato",
+    "image": "potato-early-blight.jpg",
+    "expected_label": "potato_early_blight",
+    "soil": {
+      "soil_moisture": 22.67,
+      "soil_ph": 5.53,
+      "nitrogen": 16.23,
+      "phosphorus": 26.06,
+      "potassium": 20.3,
+      "ambient_temperature": 20.07,
+      "humidity": 48.46
+    }
+  },
+  {
+    "id": "pepper-bacterial-spot",
+    "title": "Pepper bacterial spot",
+    "description": "Photo only - no soil data.",
+    "crop": "pepper",
+    "image": "pepper-bacterial-spot.jpg",
+    "expected_label": "pepper_bacterial_spot",
+    "soil": null
+  },
+  {
+    "id": "tomato-leaf-curl",
+    "title": "Tomato yellow leaf curl",
+    "description": "Photo only - a whitefly-spread virus.",
+    "crop": "tomato",
+    "image": "tomato-leaf-curl.jpg",
+    "expected_label": "tomato_yellow_leaf_curl_virus",
+    "soil": null
+  },
+  {
+    "id": "tomato-septoria",
+    "title": "Tomato septoria leaf spot",
+    "description": "Leaf spots plus a basic soil-kit reading.",
+    "crop": "tomato",
+    "image": "tomato-septoria.jpg",
+    "expected_label": "tomato_septoria_leaf_spot",
+    "soil": {
+      "soil_moisture": 24.44,
+      "soil_ph": 6.49,
+      "nitrogen": 40.32,
+      "phosphorus": 44.33,
+      "potassium": 33.74,
+      "ambient_temperature": 23.89,
+      "humidity": 44.86
+    }
+  },
+  {
+    "id": "healthy-leaf-dry-soil",
+    "title": "Healthy leaf, dry soil",
+    "description": "The leaf looks fine but the soil is parched - an early warning case.",
+    "crop": "pepper",
+    "image": "healthy-leaf-dry-soil.jpg",
+    "expected_label": "pepper_healthy",
+    "soil": {
+      "soil_moisture": 11.21,
+      "soil_ph": 5.7,
+      "nitrogen": 28.55,
+      "phosphorus": 34.26,
+      "potassium": 24.24,
+      "soil_temperature": 20.37,
+      "ambient_temperature": 26.63,
+      "humidity": 53.96,
+      "light_intensity": 558.25,
+      "chlorophyll_content": 48.91,
+      "electrochemical_signal": 1.035
+    }
+  },
+  {
+    "id": "healthy-potato",
+    "title": "Healthy potato",
+    "description": "Healthy potato leaf with good growing conditions.",
+    "crop": "potato",
+    "image": "healthy-potato.jpg",
+    "expected_label": "potato_healthy",
+    "soil": {
+      "soil_moisture": 31.96,
+      "soil_ph": 6.02,
+      "nitrogen": 37.11,
+      "phosphorus": 19.75,
+      "potassium": 34.63,
+      "ambient_temperature": 27.56,
+      "humidity": 43.82
+    }
+  },
+  {
+    "id": "tomato-spider-mites",
+    "title": "Tomato spider mites",
+    "description": "Photo only - mite stippling damage.",
+    "crop": "tomato",
+    "image": "tomato-spider-mites.jpg",
+    "expected_label": "tomato_spider_mites",
+    "soil": null
+  },
+  {
+    "id": "soil-only-stressed",
+    "title": "Soil test: stressed field",
+    "description": "Sensor readings only - no photo.",
+    "crop": null,
+    "image": null,
+    "expected_label": null,
+    "soil": {
+      "soil_moisture": 10.08,
+      "soil_ph": 6.62,
+      "nitrogen": 31.78,
+      "phosphorus": 22.27,
+      "potassium": 36.23,
+      "soil_temperature": 20.91,
+      "ambient_temperature": 19.7,
+      "humidity": 53.27,
+      "light_intensity": 794.25,
+      "chlorophyll_content": 38.69,
+      "electrochemical_signal": 1.962
+    }
+  },
+  {
+    "id": "soil-only-healthy",
+    "title": "Soil test: healthy field",
+    "description": "Sensor readings only - no photo.",
+    "crop": null,
+    "image": null,
+    "expected_label": null,
+    "soil": {
+      "soil_moisture": 30.1,
+      "soil_ph": 6.92,
+      "nitrogen": 25.87,
+      "phosphorus": 39.9,
+      "potassium": 45.95,
+      "soil_temperature": 20.57,
+      "ambient_temperature": 23.67,
+      "humidity": 65.51,
+      "light_intensity": 653.25,
+      "chlorophyll_content": 48.83,
+      "electrochemical_signal": 0.632
+    }
+  }
+]

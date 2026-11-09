@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Datasets (too large for git - see README for how to obtain them)
+Image Data/
+project_files.zip
+
+
+# Node / frontend
+node_modules/
+frontend/dist/
+.vercel/
+.env
+.env.local
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

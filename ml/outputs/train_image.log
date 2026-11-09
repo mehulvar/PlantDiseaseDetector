@@ -1,0 +1,15 @@
+2026-11-08 23:23:53,758 INFO Indexed 20638 images: {'train': 16510, 'val': 2064, 'test': 2064}
+2026-11-08 23:23:53,767 INFO Training on mps
+2026-11-08 23:25:10,699 INFO epoch 1/8 loss=1.2488 val_acc=0.9264 (77s)
+2026-11-08 23:25:57,249 INFO epoch 2/8 loss=0.5380 val_acc=0.9482 (46s)
+2026-11-08 23:26:43,522 INFO epoch 3/8 loss=0.4997 val_acc=0.9714 (46s)
+2026-11-08 23:27:31,469 INFO epoch 4/8 loss=0.4445 val_acc=0.9845 (48s)
+2026-11-08 23:28:20,331 INFO epoch 5/8 loss=0.4180 val_acc=0.9922 (49s)
+2026-11-08 23:29:09,003 INFO epoch 6/8 loss=0.3978 val_acc=0.9956 (49s)
+2026-11-08 23:29:58,484 INFO epoch 7/8 loss=0.3889 val_acc=0.9961 (49s)
+2026-11-08 23:30:48,304 INFO epoch 8/8 loss=0.3849 val_acc=0.9971 (50s)
+2026-11-08 23:30:49,877 INFO Best val acc 0.9971; fitted temperature 0.514
+/Users/mehulvarshney/Downloads/CODING/PersonalProjects/PlantDiseaseDetector/ml/train_image.py:236: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter has become the default. Learn more about the new export logic: https://docs.pytorch.org/docs/stable/onnx_export.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html
+  torch.onnx.export(
+2026-11-08 23:32:15,873 INFO ONNX test accuracy 0.9985, macro F1 0.9992
+2026-11-08 23:32:15,875 INFO Saved model and metadata to /Users/mehulvarshney/Downloads/CODING/PersonalProjects/PlantDiseaseDetector/backend/models

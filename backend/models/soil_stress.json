@@ -1,0 +1,196 @@
+{
+  "classes": [
+    "Healthy",
+    "Moderate Stress",
+    "High Stress"
+  ],
+  "features": [
+    "soil_moisture",
+    "soil_ph",
+    "nitrogen",
+    "phosphorus",
+    "potassium",
+    "soil_temperature",
+    "ambient_temperature",
+    "humidity",
+    "light_intensity",
+    "chlorophyll_content",
+    "electrochemical_signal"
+  ],
+  "model": "HistGradientBoostingClassifier trained with random feature masking",
+  "sklearn_version": "1.9.1",
+  "rows": 1200,
+  "evaluation": "5-fold GroupKFold by Plant_ID (unseen plants)",
+  "profile": {
+    "soil_moisture": {
+      "train_min": 10.0007,
+      "train_max": 39.9932,
+      "healthy_median": 34.541,
+      "healthy_p10": 30.9191,
+      "healthy_p90": 39.2584
+    },
+    "soil_ph": {
+      "train_min": 5.5074,
+      "train_max": 7.4978,
+      "healthy_median": 6.4844,
+      "healthy_p10": 5.6847,
+      "healthy_p90": 7.3418
+    },
+    "nitrogen": {
+      "train_min": 10.0036,
+      "train_max": 49.9511,
+      "healthy_median": 34.9478,
+      "healthy_p10": 22.5352,
+      "healthy_p90": 46.7448
+    },
+    "phosphorus": {
+      "train_min": 10.0177,
+      "train_max": 49.9807,
+      "healthy_median": 31.7806,
+      "healthy_p10": 16.1472,
+      "healthy_p90": 46.683
+    },
+    "potassium": {
+      "train_min": 10.0006,
+      "train_max": 49.9819,
+      "healthy_median": 32.0307,
+      "healthy_p10": 14.4715,
+      "healthy_p90": 46.7303
+    },
+    "soil_temperature": {
+      "train_min": 15.0037,
+      "train_max": 24.9959,
+      "healthy_median": 20.0553,
+      "healthy_p10": 15.7774,
+      "healthy_p90": 23.9709
+    },
+    "ambient_temperature": {
+      "train_min": 18.002,
+      "train_max": 29.9909,
+      "healthy_median": 23.8719,
+      "healthy_p10": 19.0928,
+      "healthy_p90": 28.7908
+    },
+    "humidity": {
+      "train_min": 40.0288,
+      "train_max": 69.9689,
+      "healthy_median": 54.8215,
+      "healthy_p10": 43.5559,
+      "healthy_p90": 67.8956
+    },
+    "light_intensity": {
+      "train_min": 200.6155,
+      "train_max": 999.8563,
+      "healthy_median": 625.1472,
+      "healthy_p10": 292.6271,
+      "healthy_p90": 909.2623
+    },
+    "chlorophyll_content": {
+      "train_min": 20.0255,
+      "train_max": 49.9908,
+      "healthy_median": 34.7844,
+      "healthy_p10": 23.0539,
+      "healthy_p90": 47.4318
+    },
+    "electrochemical_signal": {
+      "train_min": 0.0024,
+      "train_max": 1.9961,
+      "healthy_median": 0.986,
+      "healthy_p10": 0.1966,
+      "healthy_p90": 1.774
+    }
+  },
+  "scenarios": {
+    "all_features": {
+      "features": [
+        "soil_moisture",
+        "soil_ph",
+        "nitrogen",
+        "phosphorus",
+        "potassium",
+        "soil_temperature",
+        "ambient_temperature",
+        "humidity",
+        "light_intensity",
+        "chlorophyll_content",
+        "electrochemical_signal"
+      ],
+      "accuracy": 0.9958,
+      "macro_f1": 0.9956
+    },
+    "soil_test_kit": {
+      "features": [
+        "soil_moisture",
+        "soil_ph",
+        "nitrogen",
+        "phosphorus",
+        "potassium"
+      ],
+      "accuracy": 0.9958,
+      "macro_f1": 0.9958
+    },
+    "npk_and_ph_only": {
+      "features": [
+        "soil_ph",
+        "nitrogen",
+        "phosphorus",
+        "potassium"
+      ],
+      "accuracy": 0.455,
+      "macro_f1": 0.4379
+    },
+    "environment_only": {
+      "features": [
+        "ambient_temperature",
+        "humidity",
+        "light_intensity"
+      ],
+      "accuracy": 0.3533,
+      "macro_f1": 0.3176
+    },
+    "moisture_only": {
+      "features": [
+        "soil_moisture"
+      ],
+      "accuracy": 0.86,
+      "macro_f1": 0.8575
+    }
+  },
+  "per_class_all_features": {
+    "Healthy": {
+      "precision": 0.9933,
+      "recall": 0.9967,
+      "f1-score": 0.995,
+      "support": 299.0
+    },
+    "Moderate Stress": {
+      "precision": 0.9925,
+      "recall": 0.995,
+      "f1-score": 0.9938,
+      "support": 401.0
+    },
+    "High Stress": {
+      "precision": 1.0,
+      "recall": 0.996,
+      "f1-score": 0.998,
+      "support": 500.0
+    }
+  },
+  "confusion_matrix_all_features": [
+    [
+      298,
+      1,
+      0
+    ],
+    [
+      2,
+      399,
+      0
+    ],
+    [
+      0,
+      2,
+      498
+    ]
+  ]
+}
