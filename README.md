@@ -120,18 +120,27 @@ Configuration (environment variables): `CORS_ORIGINS` (comma-separated), `CORS_O
 
 ## Deploy (Vercel)
 
-The backend and frontend are two Vercel projects.
+**Continuous deployment is on:** both Vercel projects are connected to this GitHub repo.
+Every push to `main` redeploys production (`plant-health-api` builds from `backend/`,
+`plant-health-web` from `frontend/`); pushes to other branches get preview deployments.
+
+To set it up from scratch, the backend and frontend are two Vercel projects:
 
 ```bash
 # API: FastAPI on Vercel's Python runtime (entrypoint app/main.py, ~250 MB bundle)
+vercel project update plant-health-api --root-directory backend
 cd backend && vercel link --project plant-health-api
 vercel env add CORS_ORIGIN_REGEX production   # e.g. ^https://plant-health-web[a-z0-9-]*\.vercel\.app$
 vercel deploy --prod
 
 # Web: static Vite build
+vercel project update plant-health-web --root-directory frontend
 cd frontend && vercel link --project plant-health-web
 vercel env add VITE_API_URL production        # e.g. https://plant-health-api.vercel.app
 vercel deploy --prod
+
+# Connect each project to GitHub for automatic deploys on every push
+vercel git connect https://github.com/mehulvar/PlantDiseaseDetector.git
 ```
 
 ## Retrain the models
