@@ -1,0 +1,11 @@
+# Only backend/ and frontend/ are deployed; keep research, training and data out of the upload.
+Image Data/
+project_files.zip
+research/
+ml/
+data/
+.venv/
+**/node_modules/
+**/__pycache__/
+**/.pytest_cache/
+backend/tests/

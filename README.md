@@ -4,7 +4,7 @@ Detect plant disease from a **leaf photo**, plant stress from **soil & sensor re
 or **both together**. The two sources are fused into one health assessment with
 plain-language recommendations, so farmers can use whichever data they have.
 
-**Live demo:** https://plant-health-web.vercel.app &nbsp;·&nbsp; **API:** https://plant-health-api.vercel.app/docs
+**Live demo:** https://plant-health-web.vercel.app &nbsp;·&nbsp; **API docs:** https://plant-health-web.vercel.app/docs
 
 ```
  leaf photo ──► MobileNetV3 (ONNX) ──► P(healthy) + disease diagnosis ─┐
@@ -120,27 +120,27 @@ Configuration (environment variables): `CORS_ORIGINS` (comma-separated), `CORS_O
 
 ## Deploy (Vercel)
 
-**Continuous deployment is on:** both Vercel projects are connected to this GitHub repo.
-Every push to `main` redeploys production (`plant-health-api` builds from `backend/`,
-`plant-health-web` from `frontend/`); pushes to other branches get preview deployments.
+The whole app is **one Vercel project** (`plant-health-web`) using
+[Vercel Services](https://vercel.com/docs/services), configured in `vercel.json`:
 
-To set it up from scratch, the backend and frontend are two Vercel projects:
+| Path | Service | Source |
+| --- | --- | --- |
+| `/api/*`, `/docs`, `/openapi.json` | FastAPI (`app.main:app`) | `backend/` |
+| everything else | Vite static site | `frontend/` |
+
+Because the site and API share one domain, the frontend calls `/api/...` directly - no CORS
+configuration or API URL variable is needed.
+
+**Continuous deployment is on:** the project is connected to this GitHub repo, so every push to
+`main` redeploys production and pushes to other branches get preview deployments.
+
+To set it up from scratch:
 
 ```bash
-# API: FastAPI on Vercel's Python runtime (entrypoint app/main.py, ~250 MB bundle)
-vercel project update plant-health-api --root-directory backend
-cd backend && vercel link --project plant-health-api
-vercel env add CORS_ORIGIN_REGEX production   # e.g. ^https://plant-health-web[a-z0-9-]*\.vercel\.app$
-vercel deploy --prod
-
-# Web: static Vite build
-vercel project update plant-health-web --root-directory frontend
-cd frontend && vercel link --project plant-health-web
-vercel env add VITE_API_URL production        # e.g. https://plant-health-api.vercel.app
-vercel deploy --prod
-
-# Connect each project to GitHub for automatic deploys on every push
+vercel link --project plant-health-web          # from the repo root
+vercel project update plant-health-web --framework services --auto-detect root-directory
 vercel git connect https://github.com/mehulvar/PlantDiseaseDetector.git
+git push                                        # deploys automatically
 ```
 
 ## Retrain the models
