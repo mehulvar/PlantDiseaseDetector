@@ -17,7 +17,7 @@ export default function Hero({ samples }: HeroProps) {
           {strip.length > 0 && (
             <span className="hero__marquee">
               {strip.map((src, i) => (
-                <img key={`${src}-${i}`} src={src} alt="" loading={i < 6 ? "eager" : "lazy"} />
+                <img key={`${src}-${i}`} src={src} alt="" crossOrigin="anonymous" loading={i < 6 ? "eager" : "lazy"} />
               ))}
             </span>
           )}

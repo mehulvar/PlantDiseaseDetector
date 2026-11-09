@@ -22,7 +22,7 @@ export default function SampleCard({ sample, features, busy, error, onRun, onEdi
     <aside className="sample-card" aria-label={`Sample: ${sample.title}`}>
       <div className="sample-card__media">
         {sample.image_url ? (
-          <img src={apiUrl(sample.image_url)} alt={`Leaf photo for sample ${sample.title}`} />
+          <img src={apiUrl(sample.image_url)} alt={`Leaf photo for sample ${sample.title}`} crossOrigin="anonymous" />
         ) : (
           <div className="sample-card__no-photo mono">No photo — soil readings only</div>
         )}

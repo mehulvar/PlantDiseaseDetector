@@ -252,3 +252,11 @@ def test_unhealthy_result_never_says_no_action_needed(client):
         body = post(client, soil=soil).json()
         if body["assessment"]["status"] != "healthy":
             assert not any("No action needed" in r for r in body["recommendations"])
+
+
+def test_sample_images_are_cors_readable_even_without_origin(client):
+    image_url = next(s["image_url"] for s in client.get("/api/samples").json() if s["image_url"])
+    plain = client.get(image_url)
+    cross = client.get(image_url, headers={"Origin": "http://localhost:5173"})
+    assert plain.headers["access-control-allow-origin"] == "*"
+    assert cross.headers["access-control-allow-origin"] in ("*", "http://localhost:5173")

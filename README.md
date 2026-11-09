@@ -4,6 +4,8 @@ Detect plant disease from a **leaf photo**, plant stress from **soil & sensor re
 or **both together**. The two sources are fused into one health assessment with
 plain-language recommendations, so farmers can use whichever data they have.
 
+**Live demo:** https://plant-health-web.vercel.app &nbsp;·&nbsp; **API:** https://plant-health-api.vercel.app/docs
+
 ```
  leaf photo ──► MobileNetV3 (ONNX) ──► P(healthy) + disease diagnosis ─┐
                                                                        ├─► Bayesian evidence fusion ─► health score,
@@ -115,6 +117,22 @@ which does not document them precisely. Readings outside the training range are 
 
 Configuration (environment variables): `CORS_ORIGINS` (comma-separated), `CORS_ORIGIN_REGEX`,
 `MAX_UPLOAD_MB` (default 4; Vercel caps request bodies at 4.5 MB), `RATE_LIMIT_PER_MINUTE` (default 30 per client, per instance - best-effort; add a Vercel Firewall rate-limit rule for hard limits), `MODELS_DIR`, `SAMPLES_DIR`.
+
+## Deploy (Vercel)
+
+The backend and frontend are two Vercel projects.
+
+```bash
+# API: FastAPI on Vercel's Python runtime (entrypoint app/main.py, ~250 MB bundle)
+cd backend && vercel link --project plant-health-api
+vercel env add CORS_ORIGIN_REGEX production   # e.g. ^https://plant-health-web[a-z0-9-]*\.vercel\.app$
+vercel deploy --prod
+
+# Web: static Vite build
+cd frontend && vercel link --project plant-health-web
+vercel env add VITE_API_URL production        # e.g. https://plant-health-api.vercel.app
+vercel deploy --prod
+```
 
 ## Retrain the models
 

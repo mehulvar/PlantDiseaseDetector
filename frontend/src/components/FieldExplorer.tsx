@@ -120,7 +120,7 @@ export default function FieldExplorer(props: FieldExplorerProps) {
             <ChevronLeft />
           </button>
           {current?.image_url ? (
-            <img className="field__nav-thumb" src={apiUrl(current.image_url)} alt="" />
+            <img className="field__nav-thumb" src={apiUrl(current.image_url)} alt="" crossOrigin="anonymous" />
           ) : (
             <span className="field__nav-thumb" aria-hidden="true" />
           )}

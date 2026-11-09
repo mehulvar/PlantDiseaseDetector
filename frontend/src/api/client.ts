@@ -69,7 +69,8 @@ export function assessPlant(input: AssessInput): Promise<Assessment> {
 export async function fetchSampleImage(imageUrl: string): Promise<Blob> {
   let response: Response;
   try {
-    response = await fetch(apiUrl(imageUrl));
+    // Bypass the HTTP cache: an earlier <img> load may have cached a non-CORS copy.
+    response = await fetch(apiUrl(imageUrl), { cache: "reload" });
   } catch {
     throw new ApiError("Could not download the sample image.", 0);
   }

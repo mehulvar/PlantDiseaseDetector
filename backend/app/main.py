@@ -138,7 +138,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         path = (images_dir / filename).resolve()
         if path.parent != images_dir or not path.is_file():
             raise HTTPException(status_code=404, detail="Sample image not found.")
-        return FileResponse(path, headers={"Cache-Control": "public, max-age=86400"})
+        # Public, credential-free assets: allow any origin so a copy cached from an
+        # <img> request (sent without Origin) is still valid for a later fetch().
+        return FileResponse(
+            path, headers={"Cache-Control": "public, max-age=86400", "Access-Control-Allow-Origin": "*"}
+        )
 
     @app.post(ASSESS_PATH, response_model=AssessmentOut, responses=ERROR_RESPONSES)
     async def assess_plant(
