@@ -30,6 +30,7 @@ class ImagePrediction:
     predicted_crop: str
     crop_hint: str | None
     low_confidence: bool
+    crop_mismatch: bool  # the photo looks like a different crop than the hint
 
     @property
     def best(self) -> ClassProbability:
@@ -59,22 +60,27 @@ class ImageClassifier:
         """Classify a leaf. A known crop restricts and renormalises the candidates."""
         if crop_hint is not None and crop_hint not in self.crops:
             raise ValueError(f"Unknown crop {crop_hint!r}; expected one of {self.crops}.")
-        probs = self.probabilities(image)
+        raw = self.probabilities(image)
+        crop_totals = {crop: 0.0 for crop in self.crops}
+        for class_id, p in zip(self.class_ids, raw):
+            crop_totals[crop_of(class_id)] += float(p)
+        probs = raw
         if crop_hint is not None:
             mask = np.array([crop_of(c) == crop_hint for c in self.class_ids])
-            probs = np.where(mask, probs, 0.0)
-            probs = probs / probs.sum() if probs.sum() > 0 else mask / mask.sum()
+            masked = np.where(mask, raw, 0.0)
+            probs = masked / masked.sum() if masked.sum() > 0 else mask / mask.sum()
 
         order = np.argsort(probs)[::-1]
         top = tuple(ClassProbability(self.class_ids[i], float(probs[i])) for i in order[:TOP_K])
         p_healthy = float(sum(p for c, p in zip(self.class_ids, probs) if is_healthy_class(c)))
-        crop_totals = {crop: 0.0 for crop in self.crops}
-        for class_id, p in zip(self.class_ids, probs):
-            crop_totals[crop_of(class_id)] += float(p)
         return ImagePrediction(
             top=top,
             p_healthy=p_healthy,
             predicted_crop=max(crop_totals, key=crop_totals.get),
             crop_hint=crop_hint,
-            low_confidence=top[0].probability < LOW_CONFIDENCE_THRESHOLD,
+            # Judge confidence on the unrestricted output so a crop hint cannot
+            # manufacture certainty for an unfamiliar photo.
+            low_confidence=float(raw.max()) < LOW_CONFIDENCE_THRESHOLD
+            or top[0].probability < LOW_CONFIDENCE_THRESHOLD,
+            crop_mismatch=crop_hint is not None and crop_totals[crop_hint] < 0.5,
         )

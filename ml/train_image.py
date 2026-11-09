@@ -59,6 +59,7 @@ class TrainConfig:
     batch_size: int
     learning_rate: float
     workers: int
+    evaluate_only: bool
 
 
 def seed_everything(seed: int) -> None:
@@ -273,13 +274,34 @@ def parse_args() -> TrainConfig:
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--evaluate-only", action="store_true",
+                        help="Re-score the existing ONNX model on the saved test split (no training).")
     args = parser.parse_args()
-    return TrainConfig(args.data_dir.resolve(), args.epochs, args.batch_size, args.lr, args.workers)
+    return TrainConfig(args.data_dir.resolve(), args.epochs, args.batch_size, args.lr, args.workers,
+                       args.evaluate_only)
+
+
+def reevaluate() -> None:
+    """Re-score the exported model (e.g. after a preprocessing change) and refresh its metrics."""
+    split = pd.read_csv(OUTPUTS_DIR / "image_split.csv")
+    test = split[split.split == "test"].reset_index(drop=True)
+    metadata_path = MODELS_DIR / "leaf_disease.json"
+    metadata = json.loads(metadata_path.read_text())
+    metrics = evaluate_onnx(MODELS_DIR / "leaf_disease.onnx", test, metadata["class_ids"])
+    LOGGER.info("ONNX test accuracy %.4f, macro F1 %.4f", metrics["test_accuracy"], metrics["macro_f1"])
+    metadata.update({k: v for k, v in metrics.items() if k != "confusion_matrix"})
+    metadata_path.write_text(json.dumps(metadata, indent=2))
+    (OUTPUTS_DIR / "image_confusion_matrix.json").write_text(
+        json.dumps({"class_ids": metadata["class_ids"], "matrix": metrics["confusion_matrix"]})
+    )
 
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     config = parse_args()
+    if config.evaluate_only:
+        reevaluate()
+        return
     seed_everything(SEED)
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)

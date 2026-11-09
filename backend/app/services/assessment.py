@@ -11,7 +11,7 @@ from app.schemas import (
     SoilDriverOut,
     SoilResultOut,
 )
-from app.services.fusion import Evidence, FusionResult, fuse, image_evidence, soil_evidence
+from app.services.fusion import SOIL_WEIGHT, Evidence, FusionResult, fuse, image_evidence, soil_evidence
 from app.services.image_model import ClassProbability, ImagePrediction
 from app.services.knowledge import CLASS_INFO, CROP_PH_RANGES, favourable_conditions
 from app.services.soil_features import FEATURES_BY_KEY
@@ -68,6 +68,7 @@ def image_result_out(prediction: ImagePrediction) -> ImageResultOut:
         predicted_crop=prediction.predicted_crop,
         crop_hint=prediction.crop_hint,
         low_confidence=prediction.low_confidence,
+        crop_mismatch=prediction.crop_mismatch,
         disease=disease_out(prediction.best.class_id),
     )
 
@@ -100,7 +101,9 @@ def build_evidence(
     if image is not None:
         evidence.append(image_evidence(image.p_healthy))
     if soil is not None:
-        evidence.append(soil_evidence(soil.p_healthy, soil_prior))
+        # Readings without moisture or nitrogen carry almost no signal: weight them out.
+        weight = SOIL_WEIGHT if soil.informative else 0.0
+        evidence.append(soil_evidence(soil.p_healthy, soil_prior, weight))
     return tuple(evidence)
 
 
@@ -200,10 +203,15 @@ def warnings_for(image: ImagePrediction | None, soil: SoilPrediction | None) -> 
             "The image model is not confident. Photograph a single leaf in good, even light, "
             "filling the frame. Only pepper, potato and tomato leaves are supported."
         )
+    if image is not None and image.crop_mismatch:
+        warnings.append(
+            f"You selected {image.crop_hint}, but this photo looks more like a {image.predicted_crop} leaf. "
+            "The diagnosis is limited to the crop you chose - check the selection."
+        )
     if soil is not None and not soil.informative:
         warnings.append(
             "Without soil moisture or nitrogen readings the soil model has little to go on, "
-            "so the soil result carries little weight."
+            "so the soil result was not used in the combined score."
         )
     if soil is not None and soil.out_of_range:
         names = ", ".join(FEATURES_BY_KEY[k].label.lower() for k in soil.out_of_range)

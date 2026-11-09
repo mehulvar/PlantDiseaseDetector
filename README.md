@@ -67,10 +67,10 @@ state matches the leaf's with probability ρ. Balanced accuracy for healthy-vs-u
 | Field-quality photos + … | ρ = 1.0 | ρ = 0.8 | ρ = 0.6 |
 | --- | --- | --- | --- |
 | Image only | 65.3% | 65.3% | 65.3% |
-| + soil-test kit | **80.5%** | **73.4%** | **67.0%** |
-| + all sensors | 79.4% | 72.3% | 66.2% |
+| + soil-test kit | **80.6%** | **73.4%** | **67.0%** |
+| + all sensors | 79.5% | 72.3% | 66.2% |
 | + soil moisture only | 70.4% | 67.6% | 65.3% |
-| + air/humidity/light only | 64.8% | 65.0% | 65.1% |
+| + air/humidity/light only | 65.3% | 65.3% | 65.3% (ignored: no moisture/N) |
 
 With clean lab photos the image model is already ~100% and fusion keeps it there. Full results, including
 a soil-weight sensitivity sweep, are in `ml/outputs/fusion_metrics.json` and served at `GET /api/meta`.
@@ -114,7 +114,7 @@ Soil fields (all optional, any subset): `soil_moisture` (%), `soil_ph`, `nitroge
 which does not document them precisely. Readings outside the training range are accepted but flagged.
 
 Configuration (environment variables): `CORS_ORIGINS` (comma-separated), `CORS_ORIGIN_REGEX`,
-`MAX_UPLOAD_MB` (default 8), `RATE_LIMIT_PER_MINUTE` (default 30 per client), `MODELS_DIR`, `SAMPLES_DIR`.
+`MAX_UPLOAD_MB` (default 4; Vercel caps request bodies at 4.5 MB), `RATE_LIMIT_PER_MINUTE` (default 30 per client, per instance - best-effort; add a Vercel Firewall rate-limit rule for hard limits), `MODELS_DIR`, `SAMPLES_DIR`.
 
 ## Retrain the models
 

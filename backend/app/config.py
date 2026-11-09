@@ -22,7 +22,7 @@ class Settings:
 
 def load_settings() -> Settings:
     origins = os.getenv("CORS_ORIGINS", DEFAULT_CORS_ORIGINS)
-    max_upload_mb = float(os.getenv("MAX_UPLOAD_MB", "8"))
+    max_upload_mb = float(os.getenv("MAX_UPLOAD_MB", "4"))
     rate_limit = int(os.getenv("RATE_LIMIT_PER_MINUTE", "30"))
     if max_upload_mb <= 0 or rate_limit <= 0:
         raise ValueError("MAX_UPLOAD_MB and RATE_LIMIT_PER_MINUTE must be positive.")

@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
+import threading
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.concurrency import run_in_threadpool
 from pydantic import ValidationError
 
@@ -21,6 +22,12 @@ VERSION = "1.0.0"
 LOGGER = logging.getLogger("plant_api")
 ERROR_RESPONSES = {400: {"model": ErrorOut}, 413: {"model": ErrorOut}, 422: {"model": ErrorOut},
                    429: {"model": ErrorOut}}
+ASSESS_PATH = "/api/assess"
+MULTIPART_OVERHEAD_BYTES = 64 * 1024
+# Bound concurrent inferences per process to cap peak memory.
+INFERENCE_SLOTS = threading.BoundedSemaphore(4)
+# Headers set by the hosting platform (Vercel overwrites these; clients cannot spoof them).
+TRUSTED_CLIENT_IP_HEADERS = ("x-vercel-forwarded-for", "x-real-ip")
 
 
 def format_validation_error(error: ValidationError) -> str:
@@ -40,15 +47,34 @@ def parse_soil(raw: str | None) -> SoilReading | None:
         raise HTTPException(status_code=422, detail=f"Invalid soil data - {format_validation_error(exc)}") from exc
 
 
+def upload_too_large(limit: int) -> str:
+    return f"Image exceeds the {limit / (1024 * 1024):g} MB limit - please upload a smaller photo."
+
+
 async def read_upload(upload: UploadFile, limit: int) -> bytes:
     data = await upload.read(limit + 1)
     if len(data) > limit:
-        raise HTTPException(status_code=413, detail=f"Image exceeds the {limit // (1024 * 1024)} MB limit.")
+        raise HTTPException(status_code=413, detail=upload_too_large(limit))
     return data
+
+
+def client_key(request: Request) -> str:
+    """Identify the caller for rate limiting without trusting client-supplied X-Forwarded-For."""
+    for header in TRUSTED_CLIENT_IP_HEADERS:
+        value = request.headers.get(header, "").split(",")[0].strip()
+        if value:
+            return value
+    return request.client.host if request.client else "unknown"
 
 
 def run_assessment(services: Services, image_bytes: bytes | None, soil: SoilReading | None,
                    crop: str | None) -> AssessmentOut:
+    with INFERENCE_SLOTS:
+        return _assess(services, image_bytes, soil, crop)
+
+
+def _assess(services: Services, image_bytes: bytes | None, soil: SoilReading | None,
+            crop: str | None) -> AssessmentOut:
     image_prediction = None
     if image_bytes is not None:
         image_prediction = services.image.predict(load_image(image_bytes), crop_hint=crop)
@@ -77,10 +103,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def services_dep() -> Services:
         return get_services(settings.models_dir)
 
-    def rate_limit(request: Request) -> None:
-        client = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
-        if not limiter.allow(client or (request.client.host if request.client else "unknown")):
-            raise HTTPException(status_code=429, detail="Too many requests - please wait a minute.")
+    @app.middleware("http")
+    async def guard_assess(request: Request, call_next):
+        """Rate-limit and size-check uploads *before* the multipart body is parsed."""
+        if request.method == "POST" and request.url.path == ASSESS_PATH:
+            if not limiter.allow(client_key(request)):
+                return JSONResponse({"detail": "Too many requests - please wait a minute."}, status_code=429)
+            length = request.headers.get("content-length", "")
+            if length.isdigit() and int(length) > settings.max_upload_bytes + MULTIPART_OVERHEAD_BYTES:
+                return JSONResponse({"detail": upload_too_large(settings.max_upload_bytes)}, status_code=413)
+        return await call_next(request)
 
     @app.get("/api/health", response_model=HealthOut)
     def health() -> HealthOut:
@@ -108,8 +140,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(status_code=404, detail="Sample image not found.")
         return FileResponse(path, headers={"Cache-Control": "public, max-age=86400"})
 
-    @app.post("/api/assess", response_model=AssessmentOut, responses=ERROR_RESPONSES,
-              dependencies=[Depends(rate_limit)])
+    @app.post(ASSESS_PATH, response_model=AssessmentOut, responses=ERROR_RESPONSES)
     async def assess_plant(
         image: UploadFile | None = File(default=None, description="Leaf photo (JPEG/PNG)."),
         soil: str | None = Form(default=None, description="JSON object of soil/sensor readings."),

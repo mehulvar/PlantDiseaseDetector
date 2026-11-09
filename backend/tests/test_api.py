@@ -122,7 +122,8 @@ def test_crop_hint_restricts_predictions(client):
 def test_partial_soil_without_key_features_warns(client):
     body = post(client, soil={"humidity": 55, "ambient_temperature": 24}).json()
     assert body["soil"]["informative"] is False
-    assert any("little weight" in w for w in body["warnings"])
+    assert any("not used in the combined score" in w for w in body["warnings"])
+    assert body["assessment"]["contributions"]["soil"] == 0
 
 
 def test_out_of_training_range_readings_warn(client):
@@ -175,3 +176,58 @@ def test_cors_allows_configured_origin(client):
         headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
     )
     assert response.headers.get("access-control-allow-origin") == "http://localhost:5173"
+
+
+def test_crop_hint_mismatch_is_warned(client):
+    body = post(client, image=sample_image_bytes("tomato-late-blight"), crop="pepper").json()
+    assert body["image"]["crop_mismatch"] is True
+    assert body["image"]["predicted_crop"] == "tomato"
+    assert any("looks more like a tomato" in w for w in body["warnings"])
+
+
+def test_extreme_aspect_ratio_is_rejected_quickly(client):
+    buffer = io.BytesIO()
+    Image.new("RGB", (400_000, 10)).save(buffer, format="PNG")
+    response = post(client, image=buffer.getvalue())
+    assert response.status_code == 400
+    assert "long and thin" in response.json()["detail"]
+
+
+def test_unsupported_format_is_rejected(client):
+    buffer = io.BytesIO()
+    Image.new("RGB", (64, 64)).save(buffer, format="TIFF")
+    assert post(client, image=buffer.getvalue()).status_code == 400
+
+
+def test_oversized_request_is_rejected_before_parsing(monkeypatch):
+    monkeypatch.setenv("MAX_UPLOAD_MB", "0.01")
+    small_client = TestClient(create_app(load_settings()))
+    response = small_client.post(
+        "/api/assess",
+        content=b"x" * 200_000,
+        headers={"content-type": "multipart/form-data; boundary=zzz"},
+    )
+    assert response.status_code == 413
+
+
+def test_rate_limit_ignores_spoofed_forwarded_for(monkeypatch):
+    monkeypatch.setenv("RATE_LIMIT_PER_MINUTE", "2")
+    limited = TestClient(create_app(load_settings()))
+    codes = [
+        post_with_headers(limited, {"x-forwarded-for": f"10.0.0.{i}"}).status_code for i in range(4)
+    ]
+    assert codes[:2] == [200, 200]
+    assert codes[2:] == [429, 429]
+
+
+def test_rate_limit_uses_platform_client_ip(monkeypatch):
+    monkeypatch.setenv("RATE_LIMIT_PER_MINUTE", "1")
+    limited = TestClient(create_app(load_settings()))
+    first = post_with_headers(limited, {"x-real-ip": "1.1.1.1"})
+    second = post_with_headers(limited, {"x-real-ip": "2.2.2.2"})
+    repeat = post_with_headers(limited, {"x-real-ip": "1.1.1.1"})
+    assert (first.status_code, second.status_code, repeat.status_code) == (200, 200, 429)
+
+
+def post_with_headers(test_client: TestClient, headers: dict):
+    return test_client.post("/api/assess", data={"soil": json.dumps(HEALTHY_SOIL)}, headers=headers)

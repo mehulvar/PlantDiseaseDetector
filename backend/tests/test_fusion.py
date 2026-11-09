@@ -58,7 +58,16 @@ def test_conflicting_sources_moderate_the_result():
 def test_near_neutral_source_does_not_count_as_conflict():
     image = Evidence("image", 0.95, 0.5, 1.0)
     soil = Evidence("soil", 0.22, 0.25, 0.5)  # barely below its prior
-    assert fuse((image, soil)).agreement == "agree"
+    assert fuse((image, soil)).agreement == "single_source"
+
+
+def test_zero_weight_source_is_ignored():
+    image = image_evidence(0.95)
+    soil = soil_evidence(0.001, 0.25, weight=0.0)
+    fused = fuse((image, soil))
+    assert fused.p_healthy == pytest.approx(0.95)
+    assert fused.agreement == "single_source"
+    assert fused.status == "healthy"
 
 
 def test_fuse_requires_evidence():

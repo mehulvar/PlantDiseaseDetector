@@ -66,6 +66,7 @@ class ImageResultOut(BaseModel):
     predicted_crop: str
     crop_hint: Crop | None
     low_confidence: bool
+    crop_mismatch: bool
     disease: DiseaseInfoOut
 
 

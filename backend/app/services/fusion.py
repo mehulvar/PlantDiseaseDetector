@@ -105,10 +105,13 @@ def status_from_probability(p_healthy: float) -> str:
 
 
 def agreement_of(evidence: tuple[Evidence, ...]) -> str:
-    """Compare the direction of each source's evidence, ignoring near-neutral sources."""
-    if len(evidence) < 2:
+    """Compare the direction of each decisive source; fewer than two means no comparison."""
+    decisive = [
+        e for e in evidence if e.weight > 0 and abs(e.log_likelihood_ratio) >= NEUTRAL_EVIDENCE
+    ]
+    if len(decisive) < 2:
         return "single_source"
-    signs = {e.log_likelihood_ratio > 0 for e in evidence if abs(e.log_likelihood_ratio) >= NEUTRAL_EVIDENCE}
+    signs = {e.log_likelihood_ratio > 0 for e in decisive}
     return "conflict" if len(signs) > 1 else "agree"
 
 
@@ -118,6 +121,8 @@ def fuse(evidence: tuple[Evidence, ...]) -> FusionResult:
     p_healthy = sigmoid(sum(e.weighted_evidence for e in evidence))
     if any(e.weighted_evidence <= STRONG_NEGATIVE_EVIDENCE for e in evidence):
         p_healthy = min(p_healthy, AT_RISK_CAP)
+    # Round once so the displayed score (one decimal of a percent) and the status always agree.
+    p_healthy = round(p_healthy, 3)
     return FusionResult(
         p_healthy=p_healthy,
         status=status_from_probability(p_healthy),

@@ -90,3 +90,42 @@ def test_favourable_conditions_reports_matching_readings_only():
     notes = favourable_conditions("tomato_late_blight", {"humidity": 92, "ambient_temperature": 30})
     assert len(notes) == 1 and "humidity" in notes[0]
     assert favourable_conditions("tomato_late_blight", {}) == []
+
+
+def test_crop_matches_resize_then_center_crop_reference():
+    # Smooth content (like a photo): sub-pixel crop offsets must not change the result much.
+    yy, xx = np.mgrid[0:300, 0:500]
+    smooth = np.stack([xx / 500 * 255, yy / 300 * 255, (np.sin(xx / 40) + 1) * 127], axis=-1)
+    image = Image.fromarray(smooth.astype(np.uint8))
+    scale = 256 / 300
+    resized = image.resize((round(500 * scale), 256), Image.Resampling.BILINEAR)
+    left, top = (resized.width - 224) // 2, (resized.height - 224) // 2
+    reference = np.asarray(resized.crop((left, top, left + 224, top + 224)), dtype=np.float32)
+    ours = image_to_tensor(image)[0].transpose(1, 2, 0) * 255
+    assert np.abs(ours - reference).mean() < 2.0
+
+
+def test_square_256_image_is_a_pure_center_crop():
+    rng = np.random.default_rng(1)
+    pixels = rng.integers(0, 255, (256, 256, 3), dtype=np.uint8)
+    tensor = image_to_tensor(Image.fromarray(pixels))[0].transpose(1, 2, 0) * 255
+    assert np.allclose(tensor, pixels[16:240, 16:240], atol=0.01)
+
+
+def test_transparent_png_is_composited_on_white():
+    image = load_image(encode(Image.new("RGBA", (20, 20), (0, 0, 0, 0))))
+    assert image.getpixel((5, 5)) == (255, 255, 255)
+
+
+def test_rate_limiter_evicts_instead_of_resetting(monkeypatch):
+    import app.rate_limit as rate_limit_module
+
+    monkeypatch.setattr(rate_limit_module, "MAX_TRACKED_CLIENTS", 4)
+    now = [0.0]
+    limiter = RateLimiter(limit=1, window_seconds=10, clock=lambda: now[0])
+    assert limiter.allow("victim")
+    for i in range(10):
+        limiter.allow(f"spoof-{i}")
+    now[0] = 1.0
+    # The victim may have been evicted under pressure, but tracking stays bounded.
+    assert len(limiter._hits) <= 4

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -23,8 +24,17 @@ class Services:
     fusion_metrics: dict
 
 
-@lru_cache(maxsize=4)
+_LOAD_LOCK = threading.Lock()
+
+
 def get_services(models_dir: Path) -> Services:
+    """Load models once per process; concurrent cold-start requests wait for one load."""
+    with _LOAD_LOCK:
+        return _load_services(models_dir)
+
+
+@lru_cache(maxsize=4)
+def _load_services(models_dir: Path) -> Services:
     fusion_path = models_dir / "fusion_metrics.json"
     return Services(
         image=ImageClassifier(models_dir / "leaf_disease.onnx", models_dir / "leaf_disease.json"),

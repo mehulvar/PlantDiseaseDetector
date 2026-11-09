@@ -22,8 +22,8 @@ class RateLimiter:
     def allow(self, client: str) -> bool:
         now = self._clock()
         with self._lock:
-            if len(self._hits) > MAX_TRACKED_CLIENTS:
-                self._hits.clear()
+            if client not in self._hits and len(self._hits) >= MAX_TRACKED_CLIENTS:
+                self._evict(now)
             hits = self._hits.setdefault(client, deque())
             while hits and now - hits[0] >= self._window:
                 hits.popleft()
@@ -31,3 +31,12 @@ class RateLimiter:
                 return False
             hits.append(now)
             return True
+
+    def _evict(self, now: float) -> None:
+        """Drop clients with no recent hits; if still full, drop the oldest-seen half."""
+        stale = [c for c, h in self._hits.items() if not h or now - h[-1] >= self._window]
+        for client in stale:
+            del self._hits[client]
+        if len(self._hits) >= MAX_TRACKED_CLIENTS:
+            for client in list(self._hits)[: MAX_TRACKED_CLIENTS // 2]:
+                del self._hits[client]

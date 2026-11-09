@@ -37,6 +37,7 @@ from app.services.fusion import (  # noqa: E402
 from app.services.labels import is_healthy_class  # noqa: E402
 from app.services.preprocess import image_to_tensor  # noqa: E402
 from app.services.soil_features import SOIL_CLASSES  # noqa: E402
+from app.services.soil_model import SoilClassifier  # noqa: E402
 
 LOGGER = logging.getLogger("evaluate_fusion")
 OUTPUTS_DIR = ROOT / "ml" / "outputs"
@@ -123,15 +124,20 @@ def evaluate_condition(image_healthy_p: np.ndarray, truth: np.ndarray, soil_labe
                        soil_prior: float, soil_weight: float = SOIL_WEIGHT) -> list[dict]:
     results = []
     image_only = scores(truth, decisions(image_healthy_p, None, soil_prior, soil_weight))
+    soil_meta = json.loads((MODELS_DIR / "soil_stress.json").read_text())
     for scenario in SOIL_SCENARIOS:
         soil_probs = np.load(OUTPUTS_DIR / f"soil_cv_probabilities_{scenario}.npy")[:, HEALTHY_INDEX]
+        features = soil_meta["scenarios"][scenario]["features"]
+        # Mirror the API: readings without moisture or nitrogen get zero weight.
+        informative = any(k in features for k in SoilClassifier.KEY_FEATURES)
+        weight = soil_weight if informative else 0.0
         for rho in RHOS:
             rng = np.random.default_rng(SEED)
             soil_runs, fused_runs = [], []
             for _ in range(REPEATS):
                 rows = pair_soil(truth, soil_labels, rho, rng)
                 soil_runs.append(scores(truth, decisions(None, soil_probs[rows], soil_prior, soil_weight)))
-                fused_runs.append(scores(truth, decisions(image_healthy_p, soil_probs[rows], soil_prior, soil_weight)))
+                fused_runs.append(scores(truth, decisions(image_healthy_p, soil_probs[rows], soil_prior, weight)))
             results.append({
                 "soil_inputs": scenario, "rho": rho,
                 "image_only": {k: round(v, 4) for k, v in image_only.items()},
