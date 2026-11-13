@@ -86,7 +86,7 @@ def _assess(services: Services, image_bytes: bytes | None, soil: SoilReading | N
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or load_settings()
     app = FastAPI(
-        title="Plant Health Detector API",
+        title="AgroAI API",
         version=VERSION,
         description="Detects leaf diseases from photos and plant stress from soil readings, "
                     "and fuses both into one health assessment.",

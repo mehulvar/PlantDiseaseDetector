@@ -1,10 +1,10 @@
-# Plant Health Detector
+# AgroAI
 
 Detect plant disease from a **leaf photo**, plant stress from **soil & sensor readings**,
 or **both together**. The two sources are fused into one health assessment with
 plain-language recommendations, so farmers can use whichever data they have.
 
-**Live demo:** https://plant-health-web.vercel.app &nbsp;·&nbsp; **API docs:** https://plant-health-web.vercel.app/docs
+**Live demo:** https://agroai-web.vercel.app &nbsp;·&nbsp; **API docs:** https://agroai-web.vercel.app/docs
 
 ```
  leaf photo ──► MobileNetV3 (ONNX) ──► P(healthy) + disease diagnosis ─┐
@@ -120,7 +120,7 @@ Configuration (environment variables): `CORS_ORIGINS` (comma-separated), `CORS_O
 
 ## Deploy (Vercel)
 
-The whole app is **one Vercel project** (`plant-health-web`) using
+The whole app is **one Vercel project** (`agroai`) using
 [Vercel Services](https://vercel.com/docs/services), configured in `vercel.json`:
 
 | Path | Service | Source |
@@ -137,9 +137,9 @@ configuration or API URL variable is needed.
 To set it up from scratch:
 
 ```bash
-vercel link --project plant-health-web          # from the repo root
-vercel project update plant-health-web --framework services --auto-detect root-directory
-vercel git connect https://github.com/mehulvar/PlantDiseaseDetector.git
+vercel link --project agroai          # from the repo root
+vercel project update agroai --framework services --auto-detect root-directory
+vercel git connect https://github.com/mehulvar/AgroAI.git
 git push                                        # deploys automatically
 ```
 
